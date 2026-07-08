@@ -1,22 +1,44 @@
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('api/clientes.php?action=list')
-        .then(response => response.json())
-        .then(dados => {
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('api/clientes.php?action=report')
+        .then(function (res) { return res.json(); })
+        .then(function (clientes) {
+            var html = '';
 
-            let html = '<table border="1" cellpadding="5">';
-            html += '<tr><th>Email</th><th>Nome</th><th>Cidade</th></tr>';
+            html += '<p class="resumo">Total de clientes: <strong>' + clientes.length + '</strong></p>';
 
-            dados.forEach(cliente => {
-                html += `
-                    <tr>
-                        <td>${cliente.nome}</td>
-                        <td>${cliente.email}</td>
-                        <td>${cliente.cidade}</td>
-                    </tr>
-                `;
+            var porCidade = {};
+            clientes.forEach(function (c) {
+                porCidade[c.cidade] = (porCidade[c.cidade] || 0) + 1;
             });
 
-            html += '</table>';
-            document.getElementById('relatorios').innerHTML = html;
+            html += '<h2>Por cidade</h2><ul class="cidades">';
+            Object.keys(porCidade).sort().forEach(function (cidade) {
+                html += '<li>' + cidade + ' (' + porCidade[cidade] + ')</li>';
+            });
+            html += '</ul>';
+
+            html += '<h2>Clientes</h2>';
+            html += '<table><thead><tr><th>Nome</th><th>Email</th><th>Cidade</th><th>Telefone</th></tr></thead><tbody>';
+
+            clientes.forEach(function (c) {
+                var tel = c.telefone;
+                if (tel.length === 11) {
+                    tel = '(' + tel.substring(0, 2) + ') ' + tel.substring(2, 7) + '-' + tel.substring(7);
+                }
+
+                html += '<tr>';
+                html += '<td>' + c.nome + '</td>';
+                html += '<td>' + c.email + '</td>';
+                html += '<td>' + c.cidade + '</td>';
+                html += '<td>' + tel + '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+
+            document.getElementById('relatorio').innerHTML = html;
+        })
+        .catch(function () {
+            document.getElementById('relatorio').innerHTML = '<p class="erro">Não foi possível carregar o relatório.</p>';
         });
 });

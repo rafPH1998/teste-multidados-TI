@@ -9,7 +9,7 @@
 
 <h1>Relatório de Clientes</h1>
 
-<div id="relatorio"></div>
+<div id="relatorio"><p>Carregando...</p></div>
 
 <script src="assets/js/app.js"></script>
 </body>
