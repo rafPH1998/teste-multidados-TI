@@ -2,11 +2,11 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('api/clientes.php?action=report')
         .then(function (res) { return res.json(); })
         .then(function (clientes) {
-            var html = '';
+            let html = '';
 
             html += '<p class="resumo">Total de clientes: <strong>' + clientes.length + '</strong></p>';
 
-            var porCidade = {};
+            let porCidade = {};
             clientes.forEach(function (c) {
                 porCidade[c.cidade] = (porCidade[c.cidade] || 0) + 1;
             });
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
             html += '<table><thead><tr><th>Nome</th><th>Email</th><th>Cidade</th><th>Telefone</th></tr></thead><tbody>';
 
             clientes.forEach(function (c) {
-                var tel = c.telefone;
+                let tel = c.telefone;
                 if (tel.length === 11) {
                     tel = '(' + tel.substring(0, 2) + ') ' + tel.substring(2, 7) + '-' + tel.substring(7);
                 }
