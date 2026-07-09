@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
         html += '<div class="filtro-area">';
         html += '<input type="text" id="filtro" class="filtro" placeholder="Buscar por nome, email ou cidade...">';
         html += '<button type="button" id="limpar-filtro" class="btn-limpar" style="display:none">Limpar</button>';
+        html += '<button type="button" id="exportar-csv" class="btn-limpar">Exportar CSV</button>';
         html += '</div>';
         html += '<p id="contador-filtro" class="contador"></p>';
         html += '<div class="table-wrap">' + montarTabela(filtrarClientes()) + '</div>';
@@ -110,6 +111,23 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('filtro').value = '';
             atualizarTabela();
         });
+
+        document.getElementById('exportar-csv').addEventListener('click', exportarCsv);
+    }
+
+    // gera csv com os clientes filtrados (abre no excel)
+    function exportarCsv() {
+        var lista = filtrarClientes();
+        var csv = 'Nome;Email;Cidade;Telefone\n';
+
+        lista.forEach(function (c) {
+            csv += c.nome + ';' + c.email + ';' + c.cidade + ';' + c.telefone + '\n';
+        });
+
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
+        link.download = 'clientes.csv';
+        link.click();
     }
 
     function montarTabela(lista) {
